@@ -74,7 +74,7 @@ jobs:
         name: base-image-fastapi
 
     - name: Load Docker image
-      run: docker load < my_fastapi_app.tar
+      run: docker load < base-image-fastapi.tar
 
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@master
