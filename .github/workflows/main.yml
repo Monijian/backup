@@ -30,22 +30,13 @@ jobs:
       run: docker build -t my_fastapi_app .
 
     - name: Run Docker container
-      run: docker run -d --name test_container -p 8000:8000 -e PORT=$PORT $IMAGE_NAME
+      run: docker run --name test_container -d -p 8000:8000 -e PORT=8000 my_fastapi_app
 
-    - name: Wait until API is ready
-      run: |
-        for i in {1..60}; do
-          if curl -fsS http://localhost:8000/openapi.json >/dev/null; then
-              exit 0
-            fi
-            sleep 1
-          done
-          echo "Service never became ready"
-          docker logs test_container
-          exit 1
+    - name: Wait for FastAPI to start
+      run: sleep 10
 
-    - name: Test API (OpenAPI exists)
-      run: curl -fsS http://localhost:8000/openapi.json | grep -q '"openapi"'
+    - name: Test API
+      run: curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/ | grep 200
 
     - name: Save Docker image
       run: docker save my_fastapi_app:latest > my_fastapi_app.tar
