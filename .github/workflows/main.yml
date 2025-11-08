@@ -51,7 +51,10 @@ jobs:
         docker ps -a
         docker logs test_container
         exit 1
-
+        
+    - name: List images
+      run: docker images --format 'table {{.Repository}}\t{{.Tag}}\t{{.ID}}'
+      
     - name: Save Docker image
       run: docker save base-image-fastapi:dev > base-image-fastapi.tar
 
