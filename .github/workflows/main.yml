@@ -36,7 +36,21 @@ jobs:
       run: sleep 10
 
     - name: Test API
-      run: curl -fsS http://localhost:8000/openapi.json | grep -q '"openapi"'
+      run: |
+        echo "Testing FastAPI service..."
+        for i in {1..30}; do
+          code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/openapi.json || true)
+          if [ "$code" = "200" ]; then
+            echo "FastAPI is responding on /openapi.json"
+            exit 0
+          fi
+          echo "Waiting for service... ($i/30)"
+          sleep 2
+        done
+        echo "Service did not respond in time, printing logs:"
+        docker ps -a
+        docker logs test_container
+        exit 1
 
     - name: Save Docker image
       run: docker save base-image-fastapi:main > base-image-fastapi.tar
