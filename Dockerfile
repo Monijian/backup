@@ -24,6 +24,8 @@ COPY pyproject.toml poetry.lock ./
 RUN pip install --no-cache-dir "poetry==1.8.3" \
     && poetry install --only main
 
+RUN pip install --no-cache-dir "starlette>=0.49.1" "h11>=0.16.0"
+
 COPY app/ app/
 
 EXPOSE 8000
