@@ -27,25 +27,25 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Build Docker image
-      run: docker build -t my_fastapi_app .
+      run: docker build -t base-image-fastapi .
 
     - name: Run Docker container
-      run: docker run --name test_container -d -p 8000:8000 -e PORT=8000 my_fastapi_app
+      run: docker run --name test_container -d -p 8000:8000 -e PORT=8000 base-image-fastapi
 
     - name: Wait for FastAPI to start
       run: sleep 10
 
-    - name: Test API (healthz)
-      run: curl -fsS http://localhost:8000/healthz | grep -q '"status":"ok"'
+    - name: Test API
+      run: curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/ | grep 200
 
     - name: Save Docker image
-      run: docker save my_fastapi_app:latest > my_fastapi_app.tar
+      run: docker save base-image-fastapi:main > base-image-fastapi.tar
 
     - name: Upload Docker image as artifact
       uses: actions/upload-artifact@v4
       with:
-        name: my_fastapi_app
-        path: my_fastapi_app.tar
+        name: base-image-fastapi
+        path: base-image-fastapi.tar
 
   security-scan:
     needs: build-and-test
@@ -54,7 +54,7 @@ jobs:
     - name: Download Docker image from artifact
       uses: actions/download-artifact@v4
       with:
-        name: my_fastapi_app
+        name: base-image-fastapi
 
     - name: Load Docker image
       run: docker load < my_fastapi_app.tar
@@ -62,6 +62,6 @@ jobs:
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@master
       with:
-        image-ref: 'my_fastapi_app:latest'
+        image-ref: 'base-image-fastapi:main'
         format: 'table'
         exit-code: '1'
