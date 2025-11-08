@@ -56,7 +56,7 @@ jobs:
       run: docker images --format 'table {{.Repository}}\t{{.Tag}}\t{{.ID}}'
       
     - name: Save Docker image
-      run: docker save base-image-fastapi:dev > base-image-fastapi.tar
+      run: docker save base-image-fastapi:latest > base-image-fastapi.tar
 
     - name: Upload Docker image as artifact
       uses: actions/upload-artifact@v4
@@ -79,6 +79,6 @@ jobs:
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@master
       with:
-        image-ref: 'base-image-fastapi:dev'
+        image-ref: 'base-image-fastapi:latest'
         format: 'table'
         exit-code: '1'
