@@ -27,7 +27,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Build Docker image
-      run: docker build -t base-image-fastapi .
+      run: docker build --no-cache -t base-image-fastapi .
 
     - name: Run Docker container
       run: docker run --name test_container -d -p 8000:8000 -e PORT=8000 base-image-fastapi

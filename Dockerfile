@@ -22,9 +22,8 @@ ENV PATH="${PATH}:/home/runner/.local/bin"
 COPY pyproject.toml poetry.lock ./
 
 RUN pip install --no-cache-dir "poetry==1.8.3" \
-    && poetry install --only main
-
-RUN pip install --no-cache-dir "starlette>=0.49.1" "h11>=0.16.0"
+    && poetry install --only main \
+    && poetry run pip install --no-cache-dir "starlette>=0.49.1" "h11>=0.16.0"
 
 COPY app/ app/
 
