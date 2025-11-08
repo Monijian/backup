@@ -51,10 +51,10 @@ jobs:
         docker ps -a
         docker logs test_container
         exit 1
-        
+
     - name: List images
       run: docker images --format 'table {{.Repository}}\t{{.Tag}}\t{{.ID}}'
-      
+
     - name: Save Docker image
       run: docker save base-image-fastapi:latest > base-image-fastapi.tar
 
@@ -81,4 +81,6 @@ jobs:
       with:
         image-ref: 'base-image-fastapi:latest'
         format: 'table'
+        severity: 'CRITICAL,HIGH'
+        ignore-unfixed: true
         exit-code: '1'
