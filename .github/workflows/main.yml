@@ -36,7 +36,7 @@ jobs:
       run: sleep 10
 
     - name: Test API
-      run: curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/ | grep 200
+      run: curl -fsS http://localhost:8000/openapi.json | grep -q '"openapi"'
 
     - name: Save Docker image
       run: docker save base-image-fastapi:main > base-image-fastapi.tar
